@@ -8,25 +8,26 @@ const response = await openai.chat.completions.create({
   messages: [
     {
       role: 'system',
-      content: 'Eres un asistente que genera meditaciones guiadas'
+      content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[very-long-pause][very-long-pause]" para generar pausas'
     },
     {
-      role: 'user', content: 'Haz una meditación para arrancar el día de 3 minutos'
+      role: 'user', content: 'Haz una meditación para terminar el día de 20 minutos y pensar sobre los fracasos y triunfos. necesito ejercicios de respiración y visualización de las energias.'
     }
   ],
   model: 'gpt-3.5-turbo',
-  max_tokens: 500,
+  max_tokens: 1000,
   temperature: 0.5,
 })
 
+console.log(response)
 console.log(response.choices[0].message.content.trim());
 
 const mp32 = await openai.audio.speech.create({
   input: response.choices[0].message.content.trim(),
   model: 'tts-1', // 'tts-1' | 'tts-1-hd'
-  voice: 'shimmer',
+  voice: 'nova',
   response_format: 'mp3', // 'opus' | 'aac' | 'flac'
-  // speed?: number; // `0.25` to `4.0`. `1.0` is
+  speed: 0.8 // `0.25` to `4.0`. `1.0` is
 });
 const buffer2 = Buffer.from(await mp32.arrayBuffer());
 await fs.promises.writeFile(path.resolve('/tmp/speech2.mp3'), buffer2);
