@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 import { exec }  from  'child_process';
+import ffmpeg from 'fluent-ffmpeg';
 
 const openai = new OpenAI(); // process.env.OPENAI_API_KEY by default apiKey
 
@@ -36,14 +37,31 @@ await fs.promises.writeFile(path.resolve('/tmp/speech2.mp3'), buffer2);
 console.log('generated initial MP3')
 console.log('mixing with birds and sounds')
 
-let command_ffmpeg = "ffmpeg -y -i /tmp/speech2.mp3 -i ambient-forest-sounds.m4a -filter_complex amix=inputs=2:duration=longest:weights=\"1 0.5\" /tmp/mixed_audio.mp3"
-var ffmpeg_run = exec(command_ffmpeg, 
-  (error, stdout, stderr) => {
-    console.log(stdout);
-    console.log(stderr);
-    if (error !== null) {
-        console.log(`exec error: ${error}`);
-    }
-});
+ffmpeg()
+  .addInput('/tmp/speech2.mp3')
+  .addInput('ambient-forest-sounds.m4a')
+  .complexFilter([{
+    filter: 'volume',
+    options: ['1.0'],
+    inputs: "0:0",
+    outputs: "[s1]"
+  },
+  {
+    filter: 'volume',
+    options: ['0.85'],
+    inputs: "1:0",
+    outputs: "[s2]"
+  },
+  {
+    filter: 'amix',
+    inputs: ["[s1]","[s2]"],
+    options: ['duration=first','dropout_transition=0']
+  }]).output('/tmp/mixed_audio_fluent.mp3').on('error', function(err) {
+    console.log(err);
+  })
+  .on('end', function() {
+    console.log('Amixed audio files together.');
+  })
+  .run();
 
 console.log('meditation done!')
