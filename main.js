@@ -13,7 +13,7 @@ const response = await openai.chat.completions.create({
       content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause][very-long-pause]" para generar pausas'
     },
     {
-      role: 'user', content: 'Haz una meditación para terminar el día de 20 minutos y pensar sobre los fracasos y triunfos. necesito ejercicios de respiración y visualización de las energias.'
+      role: 'user', content: 'Haz una meditación para empezar el día de 20 minutos y pensar sobre los fracasos y triunfos. necesito ejercicios de respiración y visualización de las energias.'
     }
   ],
   model: 'gpt-3.5-turbo',
@@ -36,8 +36,8 @@ await fs.promises.writeFile(path.resolve('/tmp/speech2.mp3'), buffer2);
 console.log('generated initial MP3')
 console.log('mixing with birds and sounds')
 
-let command = "ffmpeg -y -i /tmp/speech2.mp3 -i ambient-forest-sounds.m4a -filter_complex amix=inputs=2:duration=longest /tmp/mixed_audio.mp3"
-var yourscript = exec(command, 
+let command_ffmpeg = "ffmpeg -y -i /tmp/speech2.mp3 -i ambient-forest-sounds.m4a -filter_complex amix=inputs=2:duration=longest:weights=\"1 0.5\" /tmp/mixed_audio.mp3"
+var ffmpeg_run = exec(command_ffmpeg, 
   (error, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);
