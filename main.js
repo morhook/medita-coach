@@ -14,7 +14,7 @@ const response = await openai.chat.completions.create({
       content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas.'
     },
     {
-      role: 'user', content: 'Haz una meditación para empezar el día de 20 minutos y pensar sobre los fracasos y triunfos. necesito ejercicios de respiración y visualización de las energias.'
+      role: 'user', content: 'Haz una meditación para terminar el dia laboral de 3 minutos. necesito ejercicios de respiración y visualización de las energias.'
     }
   ],
   model: 'gpt-3.5-turbo',
@@ -24,7 +24,7 @@ const response = await openai.chat.completions.create({
 
 console.log(response.choices[0].message.content.trim())
 const fullMeditation=response.choices[0].message.content.trim();
-const meditations = fullMeditation.split("[pause]");
+const meditations = fullMeditation.split("[pause]").filter(meditation => meditation.trim() != '');;
 let i = 0;
 for(const meditation of meditations) {
   console.log(`generating speech ${i}`)
@@ -45,8 +45,15 @@ await new Promise((resolve, reject) => {
   let command = ffmpeg();
 
   meditations.forEach((_, i) => {
+    console.log(`added /tmp/partial_speech{$i].mp3`);
     command = command.addInput(`/tmp/partial_speech${i}.mp3`);
-    command = command.addInput(`5-seconds-of-silence.mp3`);
+    if (i < meditations.length - 2) {
+      console.log(`added 5 seconds silence`);
+      command = command.addInput(`5-seconds-of-silence.mp3`);
+    } else {
+      console.log(`added 30 seconds silence`);
+      command = command.addInput(`30-seconds-of-silence.mp3`);
+    }
   })
   command.mergeToFile('/tmp/speech2.mp3', '/tmp').on('end', () => {
     console.log('finished concatenation');
