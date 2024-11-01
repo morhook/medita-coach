@@ -14,7 +14,7 @@ const response = await openai.chat.completions.create({
       content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas.'
     },
     {
-      role: 'user', content: 'Haz una meditación para terminar el dia laboral de 3 minutos. necesito ejercicios de respiración y visualización de las energias.'
+      role: 'user', content: 'Haz una meditación para "la sala del starcraft". Tiene que ser de 3 minutos. Necesito ejercicios de respiración y visualización de las energias. Agregar mensajes de autovaloración'
     }
   ],
   model: 'gpt-3.5-turbo',
@@ -50,9 +50,11 @@ await new Promise((resolve, reject) => {
     if (i < meditations.length - 2) {
       console.log(`added 5 seconds silence`);
       command = command.addInput(`5-seconds-of-silence.mp3`);
-    } else {
+    } else if (i == meditations.length - 2) {
       console.log(`added 30 seconds silence`);
       command = command.addInput(`30-seconds-of-silence.mp3`);
+    } else {
+      console.log(`last section`);
     }
   })
   command.mergeToFile('/tmp/speech2.mp3', '/tmp').on('end', () => {
@@ -62,11 +64,12 @@ await new Promise((resolve, reject) => {
 });
 
 console.log('generated initial MP3')
-console.log('mixing with birds and sounds')
+console.log('mixing with birds or ocean')
 
 ffmpeg()
   .addInput('/tmp/speech2.mp3')
-  .addInput('ambient-forest-sounds.m4a')
+  .addInput('ocean-waves.m4a')
+  //.addInput('ambient-forest-sounds.m4a')
   .complexFilter([{
     filter: 'volume',
     options: ['1.0'],
@@ -75,7 +78,7 @@ ffmpeg()
   },
   {
     filter: 'volume',
-    options: ['0.85'],
+    options: ['0.25'],
     inputs: "1:0",
     outputs: "[s2]"
   },
