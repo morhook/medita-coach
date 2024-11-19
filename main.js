@@ -10,19 +10,24 @@ const response = await openai.chat.completions.create({
   messages: [
     {
       role: 'system',
-      content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas.'
+      content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas. Tiene que ser de 30 minutos. Necesito 60 oraciones. Necesito que hagas una introducción larga de 5 oraciones. Después necesito que hagas 8 partes de 2 oraciones cada una.Para finalizar necesito que hagas 4 oraciones para cerrar la meditación.'
     },
     {
-      role: 'user', content: 'Haz una meditación para "la sala del starcraft". Tiene que ser de 3 minutos. Necesito ejercicios de respiración y visualización de las energias. Agregar mensajes de autovaloración'
-    }
+      role: 'user', content: 'Haz el inicio de una meditación para "la sala del starcraft". Necesito ejercicios de respiración y visualización de las energias. '
+    },
+
+
   ],
   model: 'gpt-3.5-turbo',
-  max_tokens: 1000,
-  temperature: 0.5,
+  //model: 'gpt-4-turbo',
+  max_tokens: 3000,
+  temperature: 2.0,
 })
 
-console.log(response.choices[0].message.content.trim())
 const fullMeditation=response.choices[0].message.content.trim();
+console.log(fullMeditation);
+const palabrasCount=fullMeditation.split(' ').length;
+console.log(palabrasCount);
 const meditations = fullMeditation.split("[pause]").filter(meditation => meditation.trim() != '');;
 let i = 0;
 for(const meditation of meditations) {
