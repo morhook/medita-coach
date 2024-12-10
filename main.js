@@ -95,7 +95,7 @@ async function generateMeditationTexts(longMeditation) {
     return meditations.join();
   }
 }
-const fullMeditation = await generateMeditationTexts(true);
+const fullMeditation = await generateMeditationTexts(false);
 console.log(fullMeditation);
 
 const meditations = fullMeditation.split("[pause]").filter(meditation => meditation.trim() != '');;
