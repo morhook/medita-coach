@@ -8,7 +8,6 @@ dotenv.config();
 
 const app = express();
 
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -33,16 +32,11 @@ app.post('/message', async (req, res) => {
     fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
    	  
     generateMeditation(tgBot, req.body.message.from.id, topico)
-    //child_process.exec('npm start');
-    //fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=meditacion generada&parse_mode=Markdown`)
-    //fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendAudio?chat_id=${req.body.message.from.id}&text=meditacion generada&parse_mode=Markdown`)
+
     return res.send({ status: 'ok' });
     
   } else if( textMessage === 'dame meditacion') {
     const fileName = "/tmp/mixed_audio_fluent_speech.mp3";
-    const stats = fs.statSync(fileName);
-    let readStream = fs.createReadStream(fileName);
-    const fileSizeInBytes = stats.size;
 
     const mp3File = fs.createReadStream(fileName);
     tgBot.sendAudio(req.body.message.from.id, mp3File)

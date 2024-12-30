@@ -172,9 +172,6 @@ async function generateMeditation(tgBot, chatId, topico) {
       if(tgBot && chatId) {
         fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${chatId}&text=generada meditacion&parse_mode=Markdown`)
         const fileName = "/tmp/mixed_audio_fluent_speech.mp3";
-        const stats = fs.statSync(fileName);
-        let readStream = fs.createReadStream(fileName);
-        const fileSizeInBytes = stats.size;
     
         const mp3File = fs.createReadStream(fileName);
         tgBot.sendAudio(chatId, mp3File)
@@ -186,6 +183,5 @@ async function generateMeditation(tgBot, chatId, topico) {
     .run();
   
 }
-
 
 export default generateMeditation;
