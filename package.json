@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main.js",
-    "bot": "NODE_OPTIONS='--network-family-autoselection-attempt-timeout=500' nodemon telegram-bot.js"
+    "dev": "NODE_OPTIONS='--network-family-autoselection-attempt-timeout=500' nodemon telegram-bot.js",
+    "start": "node telegram-bot.js"
   },
   "keywords": [],
   "author": "",
