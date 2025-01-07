@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Run the app when the container launches
-CMD ["node", "telegram-bot.js"]
+CMD ["npm", "start"]
