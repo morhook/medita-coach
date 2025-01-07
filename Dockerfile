@@ -9,6 +9,7 @@ COPY package*.json ./
 
 # Install any needed packages
 RUN npm install
+RUN apt install ffmpeg
 
 # Copy the current directory contents into the container at /app
 COPY . .
