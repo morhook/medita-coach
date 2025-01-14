@@ -44,7 +44,7 @@ app.post('/message', async (req, res) => {
     } else if (lowerCaseMessage.startsWith('meditate')) {
       let topico = textMessage;
      
-      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generating meditation&parse_mode=Markdown`)
       
       generateMeditation(tgBot, req.body.message.from.id, topico, 'en')
 
