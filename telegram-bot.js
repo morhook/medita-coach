@@ -26,31 +26,33 @@ app.post('/message', async (req, res) => {
   const telegramUserId = req.body.message.from.id;
   console.log(telegramUserId)
   if (TELEGRAM_USERS.includes(String(telegramUserId))) {
-	  if (textMessage === 'ping') {
-	    fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=pong&parse_mode=Markdown`, { signal: AbortSignal.timeout(5000) })
-	    console.log('ping pong!');
-	    return res.send({ status: 'ok' });
-	  } else if (textMessage.startsWith('meditar')) {
-	    let topico = textMessage;
-	   
-	    fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
-		  
-	    generateMeditation(tgBot, req.body.message.from.id, topico, 'es')
+    const lowerCaseMessage = textMessage.toLowerCase();
 
-	    return res.send({ status: 'ok' });
-	    
-	  } else if (textMessage.startsWith('meditate')) {
-	    let topico = textMessage;
-	   
-	    fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
-		  
-	    generateMeditation(tgBot, req.body.message.from.id, topico, 'es')
+    if (lowerCaseMessage === 'ping') {
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=pong&parse_mode=Markdown`, { signal: AbortSignal.timeout(5000) })
+      console.log('ping pong!');
+      return res.send({ status: 'ok' });
+    } else if (lowerCaseMessage.startsWith('meditar')) {
+      let topico = textMessage;
+     
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
+      
+      generateMeditation(tgBot, req.body.message.from.id, topico, 'es')
 
-	    return res.send({ status: 'ok' });
-	    
-	  } else {
-	    return res.send({ status: 'ok' });
-	  }
+      return res.send({ status: 'ok' });
+      
+    } else if (lowerCaseMessage.startsWith('meditate')) {
+      let topico = textMessage;
+     
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
+      
+      generateMeditation(tgBot, req.body.message.from.id, topico, 'en')
+
+      return res.send({ status: 'ok' });
+      
+    } else {
+      return res.send({ status: 'ok' });
+    }
     
   } else {
     return res.send({ status: 'ok' });
