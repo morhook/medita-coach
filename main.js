@@ -8,35 +8,54 @@ dotenv.config();
 const openai = new OpenAI(); // process.env.OPENAI_API_KEY by default apiKey
 
 console.log('generating meditation');
-async function generateMeditationTexts(longMeditation, topico) {
+async function generateMeditationTexts(longMeditation, topico, language) {
+  const prompts = {
+    es: {
+      system: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas.',
+      user: `Haz una meditación con el tema ${topico}. Necesito ejercicios de respiración y visualización de las energias. Agregar mensajes de autovaloración. Que sea de 20 oraciones aproximadamente.`,
+      userLong: 'Empieza una meditación para arrancar el día. Necesito ejercicios de respiración y visualización de las energias. Agregar mensajes de autovaloración. Es importante que mantengas cerrados los ojos en todo momento y no los abras ni regreses al presente aún.',
+      userContinue: 'Continúa la meditación con varias oraciones mas para adentrarte en temas mas profundos.',
+      userClose: 'Haz el cierre de la meditación, pidele a la persona que abra los ojos y que mueva un poco su cuerpo para volver a despertarse al mundo real.'
+    },
+    en: {
+      system: 'You are an assistant that generates guided meditations. Every two or three sentences add "[pause]" to create pauses.',
+      user: `Create a meditation on the topic ${topico}. I need breathing exercises and energy visualization. Add self-worth messages. It should be about 20 sentences long.`,
+      userLong: 'Start a meditation to begin the day. I need breathing exercises and energy visualization. Add self-worth messages. It is important to keep your eyes closed at all times and not open them or return to the present yet.',
+      userContinue: 'Continue the meditation with several more sentences to delve into deeper topics.',
+      userClose: 'Close the meditation, ask the person to open their eyes and move their body a bit to wake up to the real world.'
+    }
+  };
+
+  const selectedPrompts = prompts[language];
+
   if (longMeditation === false) {
     const response = await openai.chat.completions.create({
       messages: [
         {
           role: 'system',
-          content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas.'
+          content: selectedPrompts.system
         },
         {
-          role: 'user', content: `Haz una meditación con el tema ${topico}. Necesito ejercicios de respiración y visualización de las energias. Agregar mensajes de autovaloración. Que sea de 20 oraciones aproximadamente.`
+          role: 'user', content: selectedPrompts.user
         }
       ],
       model: 'gpt-3.5-turbo',
       max_tokens: 1000,
       temperature: 0.5,
-    })
+    });
 
-    console.log(response.choices[0].message.content.trim())
+    console.log(response.choices[0].message.content.trim());
     const fullMeditation = response.choices[0].message.content.trim();
     return fullMeditation;
   } else {
-    const meditations = []
+    const meditations = [];
     const messages = [
       {
         role: 'system',
-        content: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas.'
+        content: selectedPrompts.system
       },
       {
-        role: 'user', content: 'Empieza una meditación para arrancar el día. Necesito ejercicios de respiración y visualización de las energias. Agregar mensajes de autovaloración. Es importante que mantengas cerrados los ojos en todo momento y no los abras ni regreses al presente aún.'
+        role: 'user', content: selectedPrompts.userLong
       }
     ];
     const response = await openai.chat.completions.create({
@@ -44,59 +63,55 @@ async function generateMeditationTexts(longMeditation, topico) {
       model: 'gpt-3.5-turbo',
       max_tokens: 1000,
       temperature: 0.5,
-    })
+    });
 
-    console.log(response.choices[0].message.content.trim())
+    console.log(response.choices[0].message.content.trim());
     meditations.push(response.choices[0].message.content.trim());
-    console.log('fin de generacion inicial')
+    console.log('fin de generacion inicial');
 
     messages.push({
       role: 'assistant',
       content: meditations[0]
     });
 
-    messages.push(
-      {
-        role: 'user',
-        content: 'Continúa la meditación con varias oraciones mas para adentrarte en temas mas profundos. '
-      })
+    messages.push({
+      role: 'user',
+      content: selectedPrompts.userContinue
+    });
     const responseSecond = await openai.chat.completions.create({
       messages: messages,
       model: 'gpt-3.5-turbo',
       max_tokens: 1000,
       temperature: 0.5,
     });
-    console.log(responseSecond.choices[0].message.content.trim())
-    console.log(responseSecond);
+    console.log(responseSecond.choices[0].message.content.trim());
     meditations.push(responseSecond.choices[0].message.content.trim());
-    console.log('generada la segunda')
+    console.log('generada la segunda');
 
     messages.push({
       role: 'assistant',
       content: meditations[1]
     });
 
-    messages.push(
-      {
-        role: 'user',
-        content: 'Haz el cierre de la meditación, pidele a la persona que abra los ojos y que mueva un poco su cuerpo para volver a despertarse al mundo real.'
-      })
+    messages.push({
+      role: 'user',
+      content: selectedPrompts.userClose
+    });
     const responseThird = await openai.chat.completions.create({
       messages: messages,
       model: 'gpt-3.5-turbo',
       max_tokens: 1000,
       temperature: 0.5,
     });
-    console.log(responseThird.choices[0].message.content.trim())
-    console.log(responseThird);
+    console.log(responseThird.choices[0].message.content.trim());
     meditations.push(responseThird.choices[0].message.content.trim());
-    console.log('generacion tercera lista')
+    console.log('generacion tercera lista');
 
     return meditations.join();
   }
 }
-async function generateMeditation(tgBot, chatId, topico) {
-  const fullMeditation = await generateMeditationTexts(false, topico);
+async function generateMeditation(tgBot, chatId, topico, language) {
+  const fullMeditation = await generateMeditationTexts(false, topico, language);
   console.log(fullMeditation);
   
   const meditations = fullMeditation.split("[pause]").filter(meditation => meditation.trim() != '');;
