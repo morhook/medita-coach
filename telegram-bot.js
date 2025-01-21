@@ -1,6 +1,5 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import fs from 'fs';
 import TelegramBot from 'node-telegram-bot-api';
 import generateMeditation from './main.js';
 
@@ -18,6 +17,19 @@ app.get('/', (_req, res) => {
 });
 
 const TELEGRAM_USERS = process.env.TELEGRAM_USERS.split(',')
+
+const commands = [
+  {
+    command: 'meditar',
+    description: 'arranca una meditación'
+  },
+  {
+    command: 'start',
+    description: 'help'
+  }
+]
+
+tgBot.setMyCommands(commands)
 
 app.post('/message', async (req, res) => {
   console.log('called post on /message');
