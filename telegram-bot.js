@@ -26,7 +26,12 @@ const commands = [
   {
     command: 'start',
     description: 'help'
-  }
+  },
+  {
+    command: 'meditate',
+    description: 'starts a meditation'
+  },
+
 ]
 
 tgBot.setMyCommands(commands)
@@ -44,7 +49,8 @@ app.post('/message', async (req, res) => {
       fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=pong&parse_mode=Markdown`, { signal: AbortSignal.timeout(5000) })
       console.log('ping pong!');
       return res.send({ status: 'ok' });
-    } else if (lowerCaseMessage.startsWith('meditar')) {
+    } else if (lowerCaseMessage.startsWith('meditar') 
+      || lowerCaseMessage.startsWith('/meditar')) {
       let topico = textMessage;
      
       fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
@@ -53,7 +59,8 @@ app.post('/message', async (req, res) => {
 
       return res.send({ status: 'ok' });
       
-    } else if (lowerCaseMessage.startsWith('meditate')) {
+    } else if (lowerCaseMessage.startsWith('meditate')
+      || lowerCaseMessage.startsWith('/meditate')) {
       let topico = textMessage;
      
       fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generating meditation&parse_mode=Markdown`)
@@ -63,7 +70,7 @@ app.post('/message', async (req, res) => {
       return res.send({ status: 'ok' });
       
     } else if (textMessage === '/start') {
-      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para comenzar, escribe "meditar" seguido de un tema sobre el que quieras meditar. Hello! I'm a bot that will help you meditate. Put "meditate" to start meditating. &parse_mode=Markdown`)
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para comenzar, escribe "meditar" seguido de un tema sobre el que quieras meditar. \n\nHello! I'm a bot that will help you meditate. Put "meditate" to start meditating. &parse_mode=Markdown`)
       return res.send({ status: 'ok' });
     } else {
       return res.send({ status: 'ok' });
@@ -71,7 +78,7 @@ app.post('/message', async (req, res) => {
     
   } else {
     if (textMessage === '/start') {
-      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para entrar al sistema enviar un mensaje personal a morhook avisandole que te autorize. Hello! To start meditating, please ask for authorization to morhook &parse_mode=Markdown`)
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para entrar al sistema enviar un mensaje personal a morhook avisandole que te autorize. \n\nHello! To start meditating, please ask for authorization to morhook &parse_mode=Markdown`)
     }
     return res.send({ status: 'ok' });
   }
