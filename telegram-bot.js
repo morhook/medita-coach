@@ -70,7 +70,7 @@ app.post('/message', async (req, res) => {
       return res.send({ status: 'ok' });
       
     } else if (textMessage === '/start') {
-      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para comenzar, escribe "meditar" seguido de un tema sobre el que quieras meditar. \n\nHello! I'm a bot that will help you meditate. Put "meditate" to start meditating. &parse_mode=Markdown`)
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para comenzar, escribe "meditar" seguido de un tema sobre el que quieras meditar. %0A%0AHello! I'm a bot that will help you meditate. Put "meditate" to start meditating. &parse_mode=Markdown`)
       return res.send({ status: 'ok' });
     } else {
       return res.send({ status: 'ok' });
@@ -78,7 +78,7 @@ app.post('/message', async (req, res) => {
     
   } else {
     if (textMessage === '/start') {
-      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para entrar al sistema enviar un mensaje personal a morhook avisandole que te autorize. \n\nHello! To start meditating, please ask for authorization to morhook &parse_mode=Markdown`)
+      fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=Hola! Soy un bot que te ayuda a meditar. Para entrar al sistema enviar un mensaje personal a morhook avisandole que te autorize. %0A%0AHello! To start meditating, please ask for authorization to morhook &parse_mode=Markdown`)
     }
     return res.send({ status: 'ok' });
   }
