@@ -7,8 +7,8 @@ dotenv.config();
 
 const openai = new OpenAI(); // process.env.OPENAI_API_KEY by default apiKey
 
-console.log('generating meditation');
 async function generateMeditationTexts(longMeditation, topico, language) {
+  console.log('generating meditation');
   const prompts = {
     es: {
       system: 'Eres un asistente que genera meditaciones guiadas. Cada dos o tres oraciones agregar "[pause]" para generar pausas.',
