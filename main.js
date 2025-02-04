@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
+import { generateAudioRT } from './helpers.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -119,6 +120,8 @@ async function generateMeditation(tgBot, chatId, topico, language) {
   for (const meditation of meditations) {
     console.log(`generating speech ${i}`)
     console.log(meditation);
+
+    /*
     const mp32 = await openai.audio.speech.create({
       input: meditation,
       model: 'tts-1', // 'tts-1' | 'tts-1-hd'
@@ -128,6 +131,10 @@ async function generateMeditation(tgBot, chatId, topico, language) {
     });
     const buffer = Buffer.from(await mp32.arrayBuffer());
     await fs.promises.writeFile(path.resolve(`/tmp/partial_speech${i}.mp3`), buffer);
+    */
+
+    await generateAudioRT(meditation, `/tmp/partial_speech${i}.mp3`);
+
     i = i + 1;
   };
   console.log('merging together all generated files')
