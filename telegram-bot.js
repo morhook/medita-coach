@@ -36,7 +36,7 @@ const commands = [
 
 tgBot.setMyCommands(commands)
 
-app.post('/message', async (req, res) => {
+const tgBotEndpoint = async (req, res) => {
   console.log('called post on /message');
   console.log(req.body);
   const textMessage = req.body.message.text;
@@ -52,7 +52,7 @@ app.post('/message', async (req, res) => {
     } else if (lowerCaseMessage.startsWith('meditar') 
       || lowerCaseMessage.startsWith('/meditar')) {
       let topico = textMessage;
-     
+    
       fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generando meditacion&parse_mode=Markdown`)
       
       generateMeditation(tgBot, req.body.message.from.id, topico, 'es')
@@ -62,7 +62,7 @@ app.post('/message', async (req, res) => {
     } else if (lowerCaseMessage.startsWith('meditate')
       || lowerCaseMessage.startsWith('/meditate')) {
       let topico = textMessage;
-     
+    
       fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${req.body.message.from.id}&text=generating meditation&parse_mode=Markdown`)
       
       generateMeditation(tgBot, req.body.message.from.id, topico, 'en')
@@ -82,8 +82,15 @@ app.post('/message', async (req, res) => {
     }
     return res.send({ status: 'ok' });
   }
-});
+};
 
-app.listen((process.env.PORT || 3000), () => {
-  console.log('App listening on port ' + (process.env.PORT || 3000));
-});
+app.post('/message', tgBotEndpoint);
+
+// If run from file and not imported from other
+if (process.argv.join().indexOf('telegram-bot') > -1) {
+  app.listen((process.env.PORT || 3000), () => {
+    console.log('App listening on port ' + (process.env.PORT || 3000));
+  });
+}
+
+export { tgBotEndpoint };
