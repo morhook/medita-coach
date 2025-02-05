@@ -120,20 +120,10 @@ async function generateMeditation(tgBot, chatId, topico, language) {
   for (const meditation of meditations) {
     console.log(`generating speech ${i}`)
     console.log(meditation);
-
-    /*
-    const mp32 = await openai.audio.speech.create({
-      input: meditation,
-      model: 'tts-1', // 'tts-1' | 'tts-1-hd'
-      voice: 'nova',
-      response_format: 'mp3', // 'opus' | 'aac' | 'flac'
-      speed: 0.8 // `0.25` to `4.0`. `1.0` is
-    });
-    const buffer = Buffer.from(await mp32.arrayBuffer());
-    await fs.promises.writeFile(path.resolve(`/tmp/partial_speech${i}.mp3`), buffer);
-    */
-
-    await generateAudioRT(meditation, `/tmp/partial_speech${i}.mp3`);
+    if (language === 'es')
+      await generateAudioRT(meditation, `/tmp/partial_speech${i}.mp3`);
+    else 
+      await generateAudioRT(meditation, `/tmp/partial_speech${i}.mp3`, 'english', 'new yorker');
 
     i = i + 1;
   };

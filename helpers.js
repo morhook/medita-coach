@@ -33,7 +33,7 @@ const writeWav = async (pcmBuffer, outputFilePath) => {
   fs.writeFileSync(outputFilePath, wavBuffer);
 };
 
-export const generateAudioRT = (script, outputPath) => {
+export const generateAudioRT = (script, outputPath, language = 'spanish', accent = 'argentinian') => {
   return new Promise((resolve) => {
 
     const rt = new OpenAIRealtimeWS({ model: 'gpt-4o-realtime-preview-2024-12-17' });
@@ -50,12 +50,10 @@ export const generateAudioRT = (script, outputPath) => {
       rt.send({
         type: 'response.create',
         response: {
-          instructions: `Eres un profesor de meditación. Habla en español con acento argentino. Habla rápido. Habla muy fuerte con mucho entusiasmo. Debes leer exactamente este script:
+          instructions: `You are a meditation teacher. Speak in ${language} with a ${accent} accent. Speak quickly. Speak very loudly with a lot of enthusiasm. You must read exactly this script:
           ${script}
           `,
-          // 'alloy' | 'ash' | 'ballad' | 'coral' | 'echo' | 'sage' | 'shimmer' | 'verse'
           voice: 'alloy',
-          // voice: 'ash', // ash se corta
         },
       });
     });
@@ -79,18 +77,9 @@ export const generateAudioRT = (script, outputPath) => {
 
       const currentDate = new Date();
 
-      const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const day = String(currentDate.getDate()).padStart(2, '0');
-      const hours = String(currentDate.getHours()).padStart(2, '0');
-      const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-      const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-      
-      const dateTimeString = `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
-      
-      writeWav(concatenatedBuffer, `${dateTimeString}.wav`);
+      writeWav(concatenatedBuffer, `/tmp/tmp_realtime.wav`);
 
-      ffmpeg(`${dateTimeString}.wav`)
+      ffmpeg(`/tmp/tmp_realtime.wav`)
         .inputOptions([
           '-ar 24000', // audio sample rate
           '-f s16le', // input format PCM 16-bit little-endian
