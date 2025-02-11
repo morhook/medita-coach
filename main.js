@@ -121,9 +121,9 @@ async function generateMeditation(tgBot, chatId, topico, language) {
     console.log(`generating speech ${i}`)
     console.log(meditation);
     if (language === 'es')
-      await generateAudioRT(meditation, `/tmp/partial_speech${i}.mp3`);
+      await generateAudioRT(meditation, `/tmp/partial_speech${chatId}_${i}.mp3`, chatId);
     else 
-      await generateAudioRT(meditation, `/tmp/partial_speech${i}.mp3`, 'english', 'new yorker');
+      await generateAudioRT(meditation, `/tmp/partial_speech${chatId}_${i}.mp3`, chatId, 'english', 'new yorker');
 
     i = i + 1;
   };
@@ -133,8 +133,8 @@ async function generateMeditation(tgBot, chatId, topico, language) {
     let command = ffmpeg();
   
     meditations.forEach((_, i) => {
-      console.log(`added /tmp/partial_speech{$i].mp3`);
-      command = command.addInput(`/tmp/partial_speech${i}.mp3`);
+      console.log(`added /tmp/partial_speech${chatId}_${i}.mp3`);
+      command = command.addInput(`/tmp/partial_speech${chatId}_${i}.mp3`);
       if (i < meditations.length - 2) {
         console.log(`added 5 seconds silence`);
         command = command.addInput(`5-seconds-of-silence.mp3`);
@@ -145,7 +145,7 @@ async function generateMeditation(tgBot, chatId, topico, language) {
         console.log(`last section`);
       }
     })
-    command.mergeToFile('/tmp/speech2.mp3', '/tmp').on('end', () => {
+    command.mergeToFile(`/tmp/speech2_${chatId}.mp3`, '/tmp').on('end', () => {
       console.log('finished concatenation');
       resolve();
     });
@@ -155,7 +155,7 @@ async function generateMeditation(tgBot, chatId, topico, language) {
   console.log('mixing with birds or ocean')
   
   ffmpeg()
-    .addInput('/tmp/speech2.mp3')
+    .addInput(`/tmp/speech2_${chatId}.mp3`)
     //.addInput('ocean-waves.m4a')
     .addInput('ambient-forest-sounds.m4a')
     .complexFilter([{
@@ -174,7 +174,7 @@ async function generateMeditation(tgBot, chatId, topico, language) {
       filter: 'amix',
       inputs: ["[s1]", "[s2]"],
       options: ['duration=first', 'dropout_transition=0']
-    }]).output('/tmp/mixed_audio_fluent_speech.mp3').on('error', function (err) {
+    }]).output(`/tmp/mixed_audio_fluent_speech_${chatId}.mp3`).on('error', function (err) {
       console.log(err);
     })
     .on('end', function () {
@@ -184,7 +184,7 @@ async function generateMeditation(tgBot, chatId, topico, language) {
       if(tgBot && chatId) {
         const finishedMeditation = (language === 'es' ? 'generada meditación' : 'meditation generated');
         fetch(`https://api.telegram.org/bot${ process.env.TELEGRAM_TOKEN }/sendMessage?chat_id=${chatId}&text=${finishedMeditation}&parse_mode=Markdown`)
-        const fileName = "/tmp/mixed_audio_fluent_speech.mp3";
+        const fileName = `/tmp/mixed_audio_fluent_speech_${chatId}.mp3`;
     
         const mp3File = fs.createReadStream(fileName);
         tgBot.sendAudio(chatId, mp3File)

@@ -33,7 +33,7 @@ const writeWav = async (pcmBuffer, outputFilePath) => {
   fs.writeFileSync(outputFilePath, wavBuffer);
 };
 
-export const generateAudioRT = (script, outputPath, language = 'spanish', accent = 'argentinian') => {
+export const generateAudioRT = (script, outputPath, chatId, language = 'spanish', accent = 'argentinian') => {
   return new Promise((resolve) => {
 
     const rt = new OpenAIRealtimeWS({ model: 'gpt-4o-realtime-preview-2024-12-17' });
@@ -77,9 +77,9 @@ export const generateAudioRT = (script, outputPath, language = 'spanish', accent
 
       const currentDate = new Date();
 
-      writeWav(concatenatedBuffer, `/tmp/tmp_realtime.wav`);
+      writeWav(concatenatedBuffer, `/tmp/tmp_realtime_${chatId}.wav`);
 
-      ffmpeg(`/tmp/tmp_realtime.wav`)
+      ffmpeg(`/tmp/tmp_realtime_${chatId}.wav`)
         .inputOptions([
           '-ar 24000', // audio sample rate
           '-f s16le', // input format PCM 16-bit little-endian
