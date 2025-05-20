@@ -3,12 +3,17 @@
 If you want to meditate, please use our bot. 
 
 ## Index:
+* [Telegram Bot Beta Test](#telegram-bot)
 * [Setup](#setup)
 * [Run terminal client](#run-terminal-cli)
 * [Start Telegram bot](#start-telegram-bot)
 * [Troubleshooting](#troubleshooting)
 
 ------
+
+## <a name="telegram-bot"></a> Telegram Bot
+
+To enter our public beta enter the link https://t.me/meditacoachbot and ask for permissions to @morhook via DM.
 
 ## <a name="setup"></a> Setup
 
