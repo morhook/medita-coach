@@ -13,7 +13,7 @@ If you want to meditate, please use our bot.
 
 ## <a name="telegram-bot"></a> Telegram Bot
 
-To enter our public beta enter the link https://t.me/meditacoachbot and ask for permissions to @morhook via DM.
+To enter our public beta enter the link https://t.me/meditacoachbot and ask for permissions to @morhook via DM. The bot will give you your "telegramId" to be able to give you permissions.
 
 ## <a name="setup"></a> Setup
 
